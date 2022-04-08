@@ -1,0 +1,31 @@
+class Prenda {
+  Tipo tipo;
+  String material; 
+}
+
+class PrendaColorUnico extends Prenda {
+  String colorPrincipal;
+}
+
+class PrendaConColorSecundario extends Prenda {
+  String colorPrincipal;
+  String colorSecundario;
+}
+
+Class Tipo {
+  TipoPrenda tipo;
+  CategoriaPrenda categoria;
+}
+
+enum TipoPrenda {
+  ZAPATOS,
+  CAMISA,
+  PANTALON
+}
+
+enum CategoriaPrenda {
+  SUPERIOR,
+  CALZADO,
+  INFERIOR,
+  ACCESORIO
+}
