@@ -1,0 +1,135 @@
+class Prenda {
+  TipoPrenda tipo;
+  Tela tela;
+  Color colorPrimario;
+  Color colorSecundario;
+
+  public Prenda(tipo, material, colorPrimario, colorSecundario){
+    if(tipo == null || material == null || colorPrimario == null) {
+      throw new PrendaInvalidaException(
+        "Faltan datos requeridos"
+      )
+    }
+    this.tipo = tipo;
+    this.material = material;
+    this.colorPrimario = colorPrimario;
+    this.colorSecundario = colorSecundario;
+  }
+
+  public Categoria getCategoria(){
+    return tipo.getCategoria()
+  }
+}
+
+class PrendaBuilder {
+  TipoPrenda tipoPrenda;
+  Tela tela;
+  Color colorPrimario;
+  Color colorSecundario;
+
+  public agregarTipoPrenda(TipoPrenda tipoPrenda){
+    this.tipoPrenda = tipoPrenda;
+  }
+
+  public agregarTela(Tela tela){
+    this.tela = tela;
+  }
+
+  public agregarColorPrimario(Color color){
+    this.colorPrimario = color;
+  }
+
+  public agregarColorSecundario(Color color){
+    this.colorSecundario = color;
+  }
+
+  public Prenda crearPrenda(){
+    return new Prenda(tipoPrenda, tela, colorPrimario, colorSecundario);
+  }
+
+  public guardarEnBorrador(Borrador borrador){
+    borrador.agregarPrenda(this);
+  }
+
+  public guardarEnGuardarropa(Guardarropa guardarropa){
+    //En caso de que haya algo invalido burbujeará la excepcion PrendaInvalidaException
+    guardarropa.agregarPrenda(this.crearPrenda());
+  }
+
+}
+
+class Borrador {
+  static Borrador INSTANCE = new Borrador();
+  List<PrendaBuilder> prendas = new ArrayList();
+
+  Borrador getInstance(){
+    return this.INSTANCE;
+  }
+
+  agregarPrenda(PrendaBuilder prenda){
+    this.prendas.add(prenda);
+  }
+}
+
+class Guardarropa {
+  static Guardarropa INSTANCE = new Guardarropa();
+  List<Prenda> prendas = new ArrayList();
+
+  Guardarropa getInstance(){
+    return this.INSTANCE;
+  }
+
+  agregarPrenda(Prenda prenda){
+    this.prendas.add(prenda);
+  }
+}
+
+enum TipoPrenda {
+  Categoria categoria;
+
+  TipoPrenda(Categoria categoria)
+
+  ZAPATO(Categoria.CALZADO),
+  CAMISA(Categoria.SUPERIOR),
+  PANTALON(Categoria.INFERIOR)
+}
+
+enum Categoria {
+  CALZADO,
+  SUPERIOR,
+  INFERIOR,
+  ACCESORIO
+}
+
+//valor por default para la trama y 2 constructores para distintas casuisticas
+class Tela {
+  Material material;
+  Trama trama = Trama.LISA;
+
+  public Tela(Material material){
+    this.material = material;
+  }
+
+  public Tela(Material material, Trama trama){
+    this.material = material;
+    this.trama = trama;
+  }
+}
+
+enum Material{
+  CUERO, JEAN
+}
+
+enum Trama {
+  LISA,
+  RAYADA,
+  LUNARES,
+  CUADRADOS,
+  ESTAMPADOS
+}
+
+class Color{
+  Int red;
+  Int green;
+  Int blue;
+}
