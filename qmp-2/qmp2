@@ -21,7 +21,7 @@ class Prenda {
   }
 }
 
-class PrendaBuilder {
+class PrendaBuilder {// Sería mejor que se llame Borrador
   TipoPrenda tipoPrenda;
   Tela tela;
   Color colorPrimario;
@@ -52,13 +52,13 @@ class PrendaBuilder {
   }
 
   public guardarEnGuardarropa(Guardarropa guardarropa){
-    //En caso de que haya algo invalido burbujeará la excepcion PrendaInvalidaException
+    //En caso de que haya algo invalido, burbujeará la excepcion PrendaInvalidaException
     guardarropa.agregarPrenda(this.crearPrenda());
   }
 
 }
 
-class Borrador {
+class Borrador { //No es recomendable singleton
   static Borrador INSTANCE = new Borrador();
   List<PrendaBuilder> prendas = new ArrayList();
 
@@ -71,7 +71,7 @@ class Borrador {
   }
 }
 
-class Guardarropa {
+class Guardarropa { //NO es recomendable singleton
   static Guardarropa INSTANCE = new Guardarropa();
   List<Prenda> prendas = new ArrayList();
 

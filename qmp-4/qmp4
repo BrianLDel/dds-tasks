@@ -1,0 +1,107 @@
+class Prenda {
+  TipoPrenda tipo;
+  Tela tela;
+  Color colorPrimario;
+  Color colorSecundario;
+
+  public Prenda(tipo, material, colorPrimario, colorSecundario){
+    if(tipo == null || material == null || colorPrimario == null) {
+      throw new PrendaInvalidaException(
+        "Faltan datos requeridos"
+      )
+    }
+    this.tipo = tipo;
+    this.material = material;
+    this.colorPrimario = colorPrimario;
+    this.colorSecundario = colorSecundario;
+  }
+
+  public Categoria getCategoria(){
+    return tipo.getCategoria()
+  }
+}
+
+class Atuendo {
+  Prenda prendaSuperior;
+  Prenda prendaInferior;
+  Prenda calzado;
+
+  constructor(prendaSuperior, prendaInferior, calzado){
+    this.prendaSuperior = prendaSuperior;
+    this.prendaInferior = prendaInferior;
+    this.calzado = calzado;
+  }
+}
+
+class Guardarropa {
+  List<Prenda> prendasSuperiores;
+  List<Prenda> prendasInteriores;
+  List<Prenda> calzados;
+  Clima clima;
+
+
+  public void List<Atuendo> generarSugerencia(){
+    return Sets.cartesianProduct(prendasSuperiores, prendasInteriores, calzado)
+            .stream()
+            .map((list) -> 
+            new Atuendo(list.get(0), list.get(1), list.get(2)))
+  }
+
+}
+
+class Clima {
+  ServicioClima servicioClima;
+  HashMap<String, BigDecimal> temperaturasPorHora;
+
+  setServicioClima(ServicioClima servicioClima){
+    this.servicioClima = servicioClima;
+  }
+
+
+  public BigDecimal obtenerTemperaturaA(LocalDateTime tiempo){
+    Optional<BigDecimal> temperatura = Optional.ofNullable(temperaturasPorHora.get(tiempo.getHour()));
+    return temperatura.orElseGet(() -> {
+      BigDecimal temp = servicioClima.obtenerTempEnCelsius();
+      temperaturasPorHora.put(tiempo.getHour(), temp)
+      return temp;
+      });
+  }
+}
+
+interface ServicioClima {
+  BigDecimal obtenerTempEnCelsius();
+}
+
+
+class AccuWeatherAPIAdapter implements ServicioClima {
+  AccuWeatherAPI accuWeather;
+
+  BigDecimal obtenerTempEnCelsius(){
+    accuWeather.getWeather("Buenos Aires, Argentina").get(0)
+      .get("temperature")
+      .get("Value").minus(32).multiply(5).divide(9);
+  }
+
+}
+
+
+public final class AccuWeatherAPI {
+
+    public final List<Map<String, Object>> getWeather(String ciudad) {
+		return Arrays.asList(new HashMap<String, Object>(){{
+			put("DateTime", "2019-05-03T01:00:00-03:00");
+			put("EpochDateTime", 1556856000);
+			put("WeatherIcon", 33);
+			put("IconPhrase", "Clear");
+			put("IsDaylight", false);
+			put("PrecipitationProbability", 0);
+			put("MobileLink", "http://m.accuweather.com/en/ar/villa-vil/7984/");
+			put("Link", "http://www.accuweather.com/en/ar/villa-vil/7984");
+			put("Temperature", new HashMap<String, Object>(){{
+				put("Value", 57);
+				put("Unit", "F");
+				put("UnitType", 18);
+			}});
+		}});
+	}
+}
